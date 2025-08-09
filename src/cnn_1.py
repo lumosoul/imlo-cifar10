@@ -69,7 +69,6 @@ train_dataset = torchvision.datasets.CIFAR10(
     root="./data", train=True, download=True, transform=train_transform
 )
 
-# Split training set into train/validation (80/20)
 train_size = int(0.8 * len(train_dataset))
 val_size = len(train_dataset) - train_size
 train_subset, val_subset = random_split(train_dataset, [train_size, val_size])
@@ -151,6 +150,7 @@ for epoch in range(epochs):
         train_acc += acc
 
     train_acc = train_acc / len(train_loader) * 100
+    prev_train_loss = train_loss
     train_loss = train_loss / len(train_loader)
 
     # Validation

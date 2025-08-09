@@ -33,7 +33,6 @@ os.makedirs(MODEL_DIR, exist_ok=True)
 MODEL_NAME = "cnn_2"
 MODEL_PATH = os.path.join(MODEL_DIR, f"{MODEL_NAME}.pth")
 
-epochs = 30
 # Coursework requirement: training must run on CPU; max 4 hours; no GPU.
 # Uncomment the following if GPU usage becomes permissible:
 # device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -101,13 +100,10 @@ class ConvNet(nn.Module):
         self.conv1 = nn.Conv2d(3, 6, 5)
         self.bn1 = nn.BatchNorm2d(6)
         self.pool1 = nn.MaxPool2d(2, 2)
-
         self.conv2 = nn.Conv2d(6, 16, 5)
         self.bn2 = nn.BatchNorm2d(16)
         self.pool2 = nn.MaxPool2d(2, 2)  # Added in CNN #2
-
         self.dropout = nn.Dropout(0.5)
-
         self.fc1 = nn.Linear(16 * 5 * 5, 120)
         self.fc2 = nn.Linear(120, 84)
         self.fc3 = nn.Linear(84, 10)
@@ -128,6 +124,7 @@ model = ConvNet().to(device)
 # ----------------------------------------------------------------------
 # Optimisation
 # ----------------------------------------------------------------------
+epochs = 30
 min_valid_loss = np.inf
 criterion = nn.CrossEntropyLoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
@@ -139,7 +136,6 @@ n_total_steps = len(train_loader)
 for epoch in range(epochs):
     train_acc = 0.0
     train_loss = 0.0
-    model.train()
 
     for images, labels in tqdm(train_loader):
         images = images.to(device)
@@ -160,14 +156,13 @@ for epoch in range(epochs):
     prev_train_loss = train_loss
     train_loss = train_loss / len(train_loader)
 
+    # Validation
+    model.eval()
     valid_acc = 0.0
     valid_loss = 0.0
-    model.eval()
-
     for images, labels in tqdm(valid_loader):
         images = images.to(device)
         labels = labels.to(device)
-
         outputs = model(images)
         loss = criterion(outputs, labels)
         valid_loss += loss.item()
