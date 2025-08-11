@@ -20,8 +20,7 @@ pip install -r requirements.txt
 ## Project Structure
 
 /tests                # Directory with experimental CNN variants  
-/tests/models         # Trained model weights for each variant
-/models               # Trained model weights for each variant
+/models or /tests/models         # Trained model weights for each variant
 train.py              # Training script (no arguments required)  
 test.py               # Evaluation script (no arguments required)  
 
