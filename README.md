@@ -1,107 +1,139 @@
-# CIFAR-10 Convolutional Neural Network Classifiers
+# Convolutional Neural Networks for CIFAR-10 Classification
 
-## Abstract
-This repository contains two custom convolutional neural network (CNN) architectures developed for the **Intelligent Systems: Machine Learning and Optimisation (IMLO)** coursework.  
-Both models are trained **from scratch** on the official CIFAR-10 dataset using CPU-only execution and evaluated on the corresponding test split.  
-The project fully complies with coursework requirements: no external datasets, pretrained weights, or GPU acceleration were used.
+This repository contains multiple implementations of Convolutional Neural Networks (CNNs) for image classification on the [CIFAR-10 dataset](https://www.cs.toronto.edu/~kriz/cifar.html).  
+Each model is trained and evaluated using PyTorch, with progressive improvements across different versions.
 
 ---
 
-## 1. Environment Setup
+## Installation
 
-It is recommended to create a Python virtual environment before installing dependencies.
+### 1. Create and activate a virtual environment
+python -m venv myenv  
+myenv\Scripts\activate.bat   # On Windows  
+# source myenv/bin/activate  # On Linux/MacOS
 
-    python -m venv myenv
-    # Windows
-    myenv\Scripts\activate.bat
-    # macOS / Linux
-    source myenv/bin/activate
-
-    pip install -r requirements.txt
+### 2. Install dependencies
+pip install -r requirements.txt
 
 ---
 
-## 2. Project Structure
+## Project Structure
 
-    /src             # Source code: CNN architectures and training/evaluation scripts
-        cnn_1.py     # CNN architecture #1
-        cnn_2.py     # CNN architecture #2
-    /models          # Trained model weight files (.pth)
-    requirements.txt # Python dependencies
-    README.md        # Project documentation
+/tests                # Directory with experimental CNN variants  
+/tests/models         # Trained model weights for each variant  
+train.py              # Training script (no arguments required)  
+test.py               # Evaluation script (no arguments required)  
 
----
-
-## 3. Model Descriptions and Results
-
-### 3.1 CNN #1
-**File:** `src/cnn_1.py`  
-**Architecture:** Two convolutional layers with batch normalization and max pooling, followed by three fully connected layers with dropout regularisation.
-
-**Test Accuracy:**
-Airplane     — 66.80%  
-Automobile   — 81.50%  
-Bird         — 53.00%  
-Cat          — 36.20%  
-Deer         — 62.70%  
-Dog          — 60.20%  
-Frog         — 72.70%  
-Horse        — 71.00%  
-Ship         — 74.30%  
-Truck        — 78.10%  
-**Total**    — 65.65%
+- train.py — trains the selected CNN on the official CIFAR-10 training set.  
+- test.py — evaluates the trained model on the CIFAR-10 test set.  
+  Note: Run test.py only after full training, or place cnn_4.pth inside models/. Otherwise, model loading will fail.
 
 ---
 
-### 3.2 CNN #2
-**File:** `src/cnn_2.py`  
-**Modification:** Added a second pooling layer after the second convolutional block.
+## Model Variants and Results
 
-**Test Accuracy:**
-Airplane     — 59.20%  
-Automobile   — 80.70%  
-Bird         — 62.60%  
-Cat          — 50.00%  
-Deer         — 56.40%  
-Dog          — 45.70%  
-Frog         — 76.20%  
-Horse        — 72.40%  
-Ship         — 88.90%  
-Truck        — 70.20%  
-**Total**    — 66.23%
+### CNN #1 — Baseline Architecture
+File: cnn_1.py  
+- Two convolutional layers  
+- Three fully connected layers  
+- Parameters inspired by standard practice exercises  
 
----
-
-## 4. Comparative Analysis
-
-| Class       | CNN #1 (%) | CNN #2 (%) | Δ Accuracy |
-|-------------|------------|------------|------------|
-| Airplane    | 66.80      | 59.20      | -7.60      |
-| Automobile  | 81.50      | 80.70      | -0.80      |
-| Bird        | 53.00      | 62.60      | +9.60      |
-| Cat         | 36.20      | 50.00      | +13.80     |
-| Deer        | 62.70      | 56.40      | -6.30      |
-| Dog         | 60.20      | 45.70      | -14.50     |
-| Frog        | 72.70      | 76.20      | +3.50      |
-| Horse       | 71.00      | 72.40      | +1.40      |
-| Ship        | 74.30      | 88.90      | +14.60     |
-| Truck       | 78.10      | 70.20      | -7.90      |
-| **Total**   | **65.65**  | **66.23**  | **+0.58**  |
-
-**Summary:**  
-The second pooling layer in CNN #2 produced a marginal overall improvement (+0.58%), with notable gains for the *cat*, *bird*, and *ship* classes. However, some classes experienced reduced accuracy, indicating class-dependent trade-offs.
+Results:  
+Overall accuracy: 65.65%  
+airplane: 66.80%  
+automobile: 81.50%  
+bird: 53.00%  
+cat: 36.20%  
+deer: 62.70%  
+dog: 60.20%  
+frog: 72.70%  
+horse: 71.00%  
+ship: 74.30%  
+truck: 78.10%  
 
 ---
 
-## 5. Academic Integrity
-All code in this repository was written by the author in compliance with the IMLO coursework rules:
-- No external datasets or pretrained weights were used.
-- All experiments adhered to the official CIFAR-10 dataset split.
-- Training was conducted exclusively on CPU within the permitted time constraints.
+### CNN #2 — MaxPooling Enhancement
+File: cnn_2.py  
+- Added an additional pooling layer (nn.MaxPool2d(2, 2)) after the second convolution.
+
+Results:  
+Overall accuracy: 66.23%  
+airplane: 59.20%  
+automobile: 80.70%  
+bird: 62.60%  
+cat: 50.00%  
+deer: 56.40%  
+dog: 45.70%  
+frog: 76.20%  
+horse: 72.40%  
+ship: 88.90%  
+truck: 70.20%  
+
+Observation: Slight improvement in overall accuracy.
 
 ---
 
-## 6. References
-[1] A. Krizhevsky, “Learning Multiple Layers of Features from Tiny Images,” 2009.  
-[2] A. Paszke et al., “PyTorch: An Imperative Style, High-Performance Deep Learning Library,” *Advances in Neural Information Processing Systems*, 2019.  
-[3] Torchvision CIFAR-10 documentation: https://pytorch.org/vision/main/generated/torchvision.datasets.CIFAR10.html
+### CNN #3 — Augmentation and Architecture Refinement
+File: cnn_3.py  
+- Removed transforms.RandomCrop(32, padding=4) to preserve image details.  
+- Added RandomRotation(15), ColorJitter(), and RandomGrayscale() for data augmentation.  
+- Added a third convolutional layer, reduced convolution kernel size from 5×5 to smaller filters.  
+- Reduced fully connected layers for efficiency.  
+
+Results:  
+Overall accuracy: 66.86%  
+airplane: 65.40%  
+automobile: 84.70%  
+bird: 50.10%  
+cat: 48.20%  
+deer: 66.00%  
+dog: 55.70%  
+frog: 77.00%  
+horse: 70.30%  
+ship: 80.10%  
+truck: 71.10%  
+
+Observation: Overall accuracy increased slightly. Shows promising direction for dataset-specific tuning.
+
+---
+
+### CNN #4 — Final Optimized Model
+File: cnn_4.py  
+- Validation set split from training data (80/20).  
+- Optimized architecture with batch normalization and dropout.  
+- Advanced data augmentation pipeline.  
+- Learning rate scheduling applied.  
+
+Results:  
+Overall accuracy: 81.16%
+
+Per-class performance (with common misclassifications):  
+
+airplane — 85.70% (ship: 3.60, automobile: 1.70, bird: 2.70)  
+automobile — 91.00% (truck: 5.80, ship: 0.90, airplane: 0.70)  
+bird — 73.30% (deer: 7.10, airplane: 4.10, frog: 4.10)  
+cat — 63.20% (dog: 12.30, bird: 6.10, deer: 5.70)  
+deer — 81.40% (horse: 4.70, bird: 6.00, cat: 3.00)  
+dog — 69.50% (cat: 15.20, horse: 4.50, bird: 3.60)  
+frog — 84.10% (cat: 4.90, bird: 3.90, deer: 2.90)  
+horse — 88.80% (deer: 3.20, dog: 2.20, cat: 2.20)  
+ship — 86.10% (airplane: 5.50, automobile: 2.90)  
+truck — 88.50% (automobile: 4.90, airplane: 1.80)  
+
+---
+
+## How to Run
+
+### Train
+python train.py
+
+### Test
+python test.py  
+Note: Ensure cnn_4.pth is present in the models/ directory before running test.py.
+
+---
+
+## Summary
+The iterative development from CNN #1 to CNN #4 improved classification accuracy from 65.65% to 81.16%.  
+Key factors included better data augmentation, optimized convolutional kernels, additional layers, and learning rate scheduling.
